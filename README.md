@@ -12,24 +12,23 @@
 
 # Koa-Vue-Notes-Api
 
-This is a simple SPA built using [Koa](http://koajs.com/) as the backend, [Vue](https://vuejs.org/) as the first frontend, and [React](https://reactjs.org) as the second frontend.
+This is a simple SPA built using [Express](https://expressjs.com/) as the backend, [Vue](https://vuejs.org/) as the first frontend, and [React](https://reactjs.org) as the second frontend.
 
 - [Frontend Vue GitHub](https://github.com/johndatserakis/koa-vue-notes-web)
 - [Frontend Vue Demo](https://koa-vue-notes-web.innermonkdesign.com/)
 - [Frontend React GitHub](https://github.com/johndatserakis/koa-react-notes-web)
 - [Frontend React Demo](https://koa-react-notes-web.innermonkdesign.com/)
-- [Backend Koa GitHub](https://github.com/johndatserakis/koa-vue-notes-api)
+- [Backend Express GitHub](https://github.com/johndatserakis/koa-vue-notes-api)
 
 # Features
 
-- Koa 2.5.1
+- Express 4.17.1
 - Fully written using async/await
-- Koa-Router
-- Koa-Ratelimit
-- Koa-Bodyparser
-- KCors
-- Koa-Json-Error for JSON requests/responses
-- Koa-Useragent to get client user-agent data
+- Express-Router
+- Express-Bodyparser
+- Cors
+- Http-Errors for JSON requests/responses
+- Express-Useragent to get client user-agent data
 - Bcrypt
 - Sendgrid Mailer for email
 - Joi for input validation
@@ -143,7 +142,7 @@ Our models folder contains two model files - one for users and one for notes. Th
 
 ### Routes
 
-Very simple - here are our routes. I've broken it down into a few files - this keeps things in control. Each route is nice and thin - all it's doing is calling a controller. Some routes are using that jwt middleware I mentioned earlier. Koa make it really nice and easy to add middleware to a route. Very cool.
+Very simple - here are our routes. I've broken it down into a few files - this keeps things in control. Each route is nice and thin - all it's doing is calling a controller. Some routes are using that jwt middleware I mentioned earlier. Express make it really nice and easy to add middleware to a route. Very cool.
 
 ### Static
 
@@ -151,7 +150,7 @@ Static files - just used for the favicon.
 
 ### index.js
 
-index.js isn't a folder - it's the brain of the app. Here you'll see we are attaching a bunch of middleware to our `Koa` instance. Very slick and straight-forward initialization.
+index.js isn't a folder - it's the brain of the app. Here you'll see we are attaching a bunch of middleware to our `Express` instance. Very slick and straight-forward initialization.
 
 ### Testing
 

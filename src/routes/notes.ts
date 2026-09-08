@@ -1,5 +1,6 @@
-import Router from "koa-router";
+import express from "express";
 import { jwt } from "../middleware/jwt";
+import { asyncHandler } from "../middleware/async-handler";
 
 import {
   index,
@@ -9,13 +10,13 @@ import {
   del,
 } from "../controllers/note-controller";
 
-export const router = new Router();
+export const router = express.Router();
 const jwtMiddleware = jwt({ secret: process.env.JWT_SECRET });
 
 const baseUrl = "/api/v1";
 
-router.get(`${baseUrl}/notes`, jwtMiddleware, index);
-router.post(`${baseUrl}/notes`, jwtMiddleware, create);
-router.get(`${baseUrl}/notes/:id`, jwtMiddleware, show);
-router.put(`${baseUrl}/notes/:id`, jwtMiddleware, update);
-router.delete(`${baseUrl}/notes/:id`, jwtMiddleware, del);
+router.get(`${baseUrl}/notes`, jwtMiddleware, asyncHandler(index));
+router.post(`${baseUrl}/notes`, jwtMiddleware, asyncHandler(create));
+router.get(`${baseUrl}/notes/:id`, jwtMiddleware, asyncHandler(show));
+router.put(`${baseUrl}/notes/:id`, jwtMiddleware, asyncHandler(update));
+router.delete(`${baseUrl}/notes/:id`, jwtMiddleware, asyncHandler(del));

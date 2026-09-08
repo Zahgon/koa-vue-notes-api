@@ -1,15 +1,16 @@
-import { Context } from "koa"
+import { NextFunction, Request, Response } from "express"
+import createError from "http-errors";
 import jsonwebtoken from "jsonwebtoken";
 
 export const jwt = (opts: {secret?: any} = {}) => {
   const { secret } = opts;
 
-  function getJwtToken(ctx: Context) {
-    if (!ctx.header || !ctx.header.authorization) {
+  function getJwtToken(req: Request) {
+    if (!req.headers || !req.headers.authorization) {
       return;
     }
 
-    const parts = ctx.header.authorization.split(" ");
+    const parts = req.headers.authorization.split(" ");
 
     if (parts.length === 2) {
       const scheme = parts[0];
@@ -19,17 +20,17 @@ export const jwt = (opts: {secret?: any} = {}) => {
         return credentials;
       }
     }
-    return ctx.throw(401, {
+    throw createError(401, {
       error: { code: 401, message: "AUTHENTICATION_ERROR" },
     });
   }
 
-  return (ctx: Context, next: Function) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     // If there's no secret set, toss it out right away
-    if (!secret) ctx.throw(401, "INVALID_SECRET");
+    if (!secret) throw createError(401, "INVALID_SECRET");
 
     // Grab the token
-    const token = getJwtToken(ctx);
+    const token = getJwtToken(req);
 
     try {
       type decodedWithUser = {
@@ -38,16 +39,16 @@ export const jwt = (opts: {secret?: any} = {}) => {
 
       // Try and decode the token asynchronously
       // This is dirty now that it's converted to TypeScript
-      const decoded: decodedWithUser = jsonwebtoken.verify(token, process.env.JWT_SECRET!) as object;
+      const decoded: decodedWithUser = jsonwebtoken.verify(token || "", process.env.JWT_SECRET!) as object;
 
-      // If it worked set the ctx.state.user parameter to the decoded token.
-      ctx.state.user = decoded.data;
+      // If it worked set the res.locals.user parameter to the decoded token.
+      res.locals.user = decoded.data;
     } catch (error) {
       // If it's an expiration error, let's report that specifically.
       if (error.name === "TokenExpiredError") {
-        ctx.throw(401, { error: { code: 401, message: "TOKEN_EXPIRED" } });
+        throw createError(401, { error: { code: 401, message: "TOKEN_EXPIRED" } });
       } else {
-        ctx.throw(401, {
+        throw createError(401, {
           error: { code: 401, message: "AUTHENTICATION_ERROR" },
         });
       }
